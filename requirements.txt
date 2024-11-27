@@ -1,1 +1,3 @@
-pip install transformers datasets
+transformers 
+datasets
+numpy

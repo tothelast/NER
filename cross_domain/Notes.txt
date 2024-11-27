@@ -1,0 +1,13 @@
+Thought process:
+
+2 Step process:
+1: Guess whether the object is a NE or not
+    This portion is the one that will be used for the negative instances
+2: Predict NE
+    Predict stuff
+3: Add B- I- stuff
+
+
+
+
+
