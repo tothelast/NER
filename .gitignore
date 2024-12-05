@@ -2,3 +2,4 @@ __pycache__/
 best_lstm_model.pt
 ner-transformer
 results
+.DS_Store
