@@ -1,9 +1,7 @@
-# lstm_ner.py
-
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from torch.nn.utils.rnn import pad_sequence  # Added this import
+from torch.nn.utils.rnn import pad_sequence  
 import json
 from pathlib import Path
 import numpy as np
@@ -12,7 +10,7 @@ from sklearn.metrics import classification_report, precision_recall_curve
 
 def train_model(model: nn.Module, train_loader: DataLoader, 
                 val_loader: DataLoader, num_epochs: int = 10):
-    """Training function with detailed logging and validation"""
+    """Training function"""
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = model.to(device)
     
@@ -85,7 +83,7 @@ def train_model(model: nn.Module, train_loader: DataLoader,
             best_val_loss = avg_val_loss
             torch.save(model.state_dict(), 'best_discontinuous_model.pt')
         
-        # Print classification report every few epochs
+        # Print classification report 
         if (epoch + 1) % 5 == 0:
             print('\nClassification Report:')
             print(classification_report(all_labels, all_preds))
@@ -96,15 +94,6 @@ def collate_batch(batch: List[Dict]) -> Dict[str, torch.Tensor]:
     """
     Custom collate function to handle variable length sequences.
     Pads sequences in the batch to the length of the longest sequence.
-    
-    Parameters:
-        batch: A list of dictionaries, each containing 'words', 'labels', and 'lengths'
-        
-    Returns:
-        A dictionary containing padded and properly formatted tensors:
-        - 'words': Padded word indices tensor
-        - 'labels': Padded label indices tensor
-        - 'lengths': Original sequence lengths tensor
     """
     # Sort batch by sequence length (descending) to optimize LSTM processing
     batch = sorted(batch, key=lambda x: x['lengths'], reverse=True)
@@ -128,7 +117,7 @@ class DiscontinuousNERDataset(Dataset):
     """
     Dataset class for handling discontinuous NER data with proper padding.
     All sequences in a batch will be padded to the length of the longest sequence
-    in that specific batch, rather than a fixed maximum length.
+    in that specific batch.
     """
     def __init__(self, data_path: Path, word2idx: Dict[str, int], label2idx: Dict[str, int]):
         with open(data_path, 'r') as f:
@@ -136,7 +125,7 @@ class DiscontinuousNERDataset(Dataset):
         self.word2idx = word2idx
         self.label2idx = label2idx
         
-        # Print dataset statistics
+        # Print statistics
         lengths = [len(item[0]) for item in self.data]
         print(f"\nDataset statistics for {data_path}:")
         print(f"Number of sequences: {len(self.data)}")
